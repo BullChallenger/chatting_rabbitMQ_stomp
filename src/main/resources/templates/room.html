@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+
+  <style>
+    .chats{
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+    .mine{
+      background: #e9e9e9;
+      border-radius: 5px;
+    }
+    .yours{
+      background: orange;
+      border-radius: 5px;
+    }
+    .nickname{
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .message{
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>CHAT ROOM</h1>
+<h2 th:text="'Room No. ' + ${chatRoomId}"></h2>
+<h2 th:text="'Nickname = ' + ${nickname}"></h2>
+
+<form>
+  <input type="text" id="message">
+  <input type="submit" value="전송" class="btn-send">
+</form>
+
+<div class="chats">
+  <div class="mine">
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script th:inline="javascript">
+  const chats = document.querySelector('.chats');
+  const messageContent = document.querySelector('#message');
+  const btnSend = document.querySelector('.btn-send');
+
+  const chatRoomId = [[${chatRoomId}]];
+  const nickname = [[${nickname}]];
+
+  const sockJS = new SockJS("/stomp/chat");
+  const stomp = Stomp.over(sockJS);
+
+  stomp.heartbeat.outgoing = 0;
+  stomp.heartbeat.incoming = 0;
+
+  // function onError(e) {
+  //     console.log("STOMP ERROR", e);
+  // }
+  //
+  // function onDebug(m) {
+  //     console.log("STOMP DEBUG", m);
+  // }
+  //
+  // stomp.debug = onDebug;
+
+  //stomp.connect('guest', 'guest', function (frame) { //rabbit
+  stomp.connect({}, function (frame) { //just stomp
+
+    console.log('STOMP Connected');
+
+    //stomp.subscribe(`/topic/room.${chatRoomId}`, function (content) { //<< amp.topic이라는 exchange에 key=room.2 queue=room.2 바인딩 된다.
+    //stomp.subscribe(`/exchange/chat.exchange/room.${chatRoomId}`, function (content) { //<< chat.exchange라는 exchange에 key=room.2 바인딩 된다. 클라이언트마다 Queue가 생성된다. 쓰레기임;
+    //stomp.subscribe(`/amq/queue/room.${chatRoomId}`, function (content) {
+    //stomp.subscribe(`/queue/room.${chatRoomId}`, function (content) {
+
+    stomp.subscribe(`/exchange/chat.exchange/room.${chatRoomId}`, function (content) {
+      const payload = JSON.parse(content.body);
+      let className = payload.nickname == nickname? 'mine' : 'yours';
+
+      const html = `<div class="${className}">
+                            <div class="nickname">${payload.nickname}</div>
+                            <div class="message">${payload.message}</div>
+                        </div>`
+
+      chats.insertAdjacentHTML('beforeend', html);
+    }); //,{'auto-delete':true, 'durable':false, 'exclusive':false}); rabbit
+
+    //입장 메세지 전송
+    //stomp.send(`/pub/chat.enter.${chatRoomId}`, {}, JSON.stringify({ rabbit
+    stomp.send(`/pub/chat.enter.${chatRoomId}`, {}, JSON.stringify({
+      chatRoomId: chatRoomId,
+      memberId: 1,
+      nickname: nickname
+    }));
+
+  });//, onError, '/');
+
+  //메세지 전송 버튼 click
+  btnSend.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const message = messageContent.value;
+    messageContent.value = '';
+
+    //stomp.send(`/pub/chat.message.${chatRoomId}`, {}, JSON.stringify({ rabbit
+    stomp.send(`/pub/chat.message.${chatRoomId}`, {}, JSON.stringify({
+      chatRoomId: chatRoomId,
+      message: message,
+      memberId: 1,
+      nickname: nickname
+    }));
+  });
+</script>
+</body>
+</html>

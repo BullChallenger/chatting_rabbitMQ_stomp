@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chat Room List</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Client ID</th>
+            <th>Broker ID</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate through the list of chat rooms and display each room -->
+        <tr th:each="room : ${chatRooms}">
+            <td th:text="${room.id}">Room ID</td>
+            <td th:text="${room.title}">Room Title</td>
+            <td th:text="${room.description}">Room Description</td>
+            <td th:text="${room.clientId}">Client ID</td>
+            <td th:text="${room.brokerId}">Broker ID</td>
+            <td>
+                <!-- JavaScript를 사용하여 랜덤 문자열 생성 후 링크에 적용 -->
+                <a th:id="'roomLink_' + ${room.id}" th:text="'Enter Room'" href="#">Enter Room</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    // 각 링크에 대해 클릭 이벤트 핸들러를 추가하여 랜덤 문자열 생성 후 적용
+    document.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            var roomId = this.getAttribute('id').split('_')[1];
+            var nickname = Math.random().toString(36).substring(2, 10); // 랜덤 문자열 생성
+            window.location.href = '/chat/room?chatRoomId=' + roomId + '&nickname=' + nickname; // 링크 이동
+        });
+    });
+</script>
+</body>
+</html>

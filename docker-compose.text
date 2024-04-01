@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  spring-boot-app:
+    build: .
+    container_name: chatting-server
+    ports:
+      - "8080:8080"  # Spring Boot 애플리케이션이 노출하는 포트 (로컬 포트:컨테이너 포트)
+    depends_on:
+      - mysql-db
+      - rabbitmq
+      - mongo-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/chat  # MySQL 컨테이너 이름과 포트를 사용하여 데이터베이스에 연결
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: rabbitmq  # RabbitMQ 호스트
+      SPRING_RABBITMQ_PORT: 5672  # RabbitMQ 포트
+      SPRING_RABBITMQ_USERNAME: guest  # RabbitMQ 사용자 이름
+      SPRING_RABBITMQ_PASSWORD: guest  # RabbitMQ 비밀번호
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-db:27017/chatting  # MongoDB 컨테이너 이름과 포트를 사용하여 MongoDB에 연결
+
+  mysql-db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"  # MySQL 컨테이너가 노출하는 포트 (로컬 포트:컨테이너 포트)
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # MySQL 루트 사용자의 비밀번호
+      MYSQL_DATABASE: chat # 생성할 데이터베이스의 이름
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"  # RabbitMQ 컨테이너가 노출하는 포트 (로컬 포트:컨테이너 포트)
+      - "15672:15672"
+      - "61613:61613"
+
+  mongo-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"  # MongoDB 컨테이너가 노출하는 포트 (로컬 포트:컨테이너 포트)

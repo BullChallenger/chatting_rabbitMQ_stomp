@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Chat Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007AFF;
+        }
+
+        #chatRoomForm {
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #EFEFF4;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #007AFF;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #CCCCCC;
+            border-radius: 10px;
+            background-color: #FFFFFF;
+            color: #333333;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: #007AFF;
+            color: #FFFFFF;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056B3;
+        }
+    </style>
+</head>
+<body>
+<h1>Create Chat Room</h1>
+<form id="chatRoomForm">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" placeholder="Enter title..." required><br>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" placeholder="Enter description..." required><br>
+    <label for="clientId">Client ID:</label>
+    <input type="text" id="clientId" name="clientId" placeholder="Enter client ID..." required><br>
+    <label for="brokerId">Broker ID:</label>
+    <input type="text" id="brokerId" name="brokerId" placeholder="Enter broker ID..." required><br>
+    <input type="submit" value="Create Chat Room">
+</form>
+
+<script>
+    document.getElementById('chatRoomForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+        fetch('/room', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to create chat room');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Chat room created:', data);
+            })
+            .catch(error => {
+                console.error('Error creating chat room:', error);
+            });
+    });
+</script>
+</body>
+</html>

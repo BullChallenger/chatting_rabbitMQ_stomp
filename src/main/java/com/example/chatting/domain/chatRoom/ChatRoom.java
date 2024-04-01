@@ -1,5 +1,6 @@
 package com.example.chatting.domain.chatRoom;
 
+import java.security.MessageDigest;
 import java.util.UUID;
 
 import com.example.chatting.api.dto.request.ChatRoomDTO.*;

@@ -1,24 +1,24 @@
 package com.example.chatting.api.service;
 
 import com.example.chatting.domain.message.ChatMessage;
-import com.example.chatting.domain.message.ChatMongoRepository;
+import com.example.chatting.domain.message.ChatMessageRepository;
+
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ChatService {
+public class ChatMessageService {
 
     private final RabbitTemplate rabbitTemplate;
-    private final ChatMongoRepository chatMongoRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Value("${rabbitmq.exchange.name}")
     private String EXCHANGE_NAME;
@@ -31,8 +31,11 @@ public class ChatService {
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveMessage(ChatMessage message) {
         message.setId(UUID.randomUUID().toString());
-        chatMongoRepository.save(message);
-        log.info("Received message: {}", message);
+        log.info("Received message: {}", chatMessageRepository.save(message));
+    }
+
+    public List<ChatMessage> findAllChatMessageBy(String chatRoomId) {
+        return chatMessageRepository.findAllByChatRoomId(chatRoomId);
     }
 
 }

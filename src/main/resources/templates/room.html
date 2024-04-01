@@ -2,46 +2,108 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Chat Room</title>
 
   <style>
-    .chats{
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-      gap: 10px;
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .mine{
-      background: #e9e9e9;
-      border-radius: 5px;
+
+    .chat-header {
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
     }
-    .yours{
-      background: orange;
-      border-radius: 5px;
+
+    .chat-body {
+      padding: 20px;
+      overflow-y: auto;
+      height: 300px;
     }
-    .nickname{
-      font-size: 16px;
+
+    .message-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+
+    .message.mine {
+      margin-right: auto;
+      background-color: #DCF8C6;
+    }
+
+    .message.yours {
+      margin-left: auto;
+      background-color: #F2F2F2;
+    }
+
+    .nickname {
       font-weight: bold;
+      margin-bottom: 5px;
     }
-    .message{
-      font-size: 14px;
+
+    .input-area {
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    .input-area input[type="text"] {
+      width: calc(100% - 20px);
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .input-area input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<h1>CHAT ROOM</h1>
-<h2 th:text="'Room No. ' + ${chatRoomId}"></h2>
-<h2 th:text="'Nickname = ' + ${nickname}"></h2>
+<div class="container">
+  <div class="chat-header">
+    <h1>CHAT ROOM</h1>
+    <h2 th:text="'Room No. ' + ${chatRoomId}"></h2>
+    <h2 th:text="'Nickname = ' + ${nickname}"></h2>
+  </div>
 
-<form>
-  <input type="text" id="message">
-  <input type="submit" value="전송" class="btn-send">
-</form>
+  <div class="chat-body" id="chat-body">
+    <!-- Chat messages will be displayed here -->
+  </div>
 
-<div class="chats">
-  <div class="mine">
-
+  <div class="input-area">
+    <form id="message-form">
+      <input type="text" id="message" placeholder="Type your message here">
+      <input type="submit" value="Send">
+    </form>
   </div>
 </div>
 
@@ -49,9 +111,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
 <script th:inline="javascript">
-  const chats = document.querySelector('.chats');
-  const messageContent = document.querySelector('#message');
-  const btnSend = document.querySelector('.btn-send');
+  const chatBody = document.getElementById('chat-body');
+  const messageForm = document.getElementById('message-form');
+  const messageContent = document.getElementById('message');
 
   const chatRoomId = [[${chatRoomId}]];
   const nickname = [[${nickname}]];
@@ -62,63 +124,48 @@
   stomp.heartbeat.outgoing = 0;
   stomp.heartbeat.incoming = 0;
 
-  // function onError(e) {
-  //     console.log("STOMP ERROR", e);
-  // }
-  //
-  // function onDebug(m) {
-  //     console.log("STOMP DEBUG", m);
-  // }
-  //
-  // stomp.debug = onDebug;
-
-  //stomp.connect('guest', 'guest', function (frame) { //rabbit
-  stomp.connect({}, function (frame) { //just stomp
-
+  stomp.connect('guest', 'guest', function (frame) {
     console.log('STOMP Connected');
-
-    //stomp.subscribe(`/topic/room.${chatRoomId}`, function (content) { //<< amp.topic이라는 exchange에 key=room.2 queue=room.2 바인딩 된다.
-    //stomp.subscribe(`/exchange/chat.exchange/room.${chatRoomId}`, function (content) { //<< chat.exchange라는 exchange에 key=room.2 바인딩 된다. 클라이언트마다 Queue가 생성된다. 쓰레기임;
-    //stomp.subscribe(`/amq/queue/room.${chatRoomId}`, function (content) {
-    //stomp.subscribe(`/queue/room.${chatRoomId}`, function (content) {
 
     stomp.subscribe(`/exchange/chat.exchange/room.${chatRoomId}`, function (content) {
       const payload = JSON.parse(content.body);
-      let className = payload.nickname == nickname? 'mine' : 'yours';
+      const className = payload.nickname === nickname ? 'mine' : 'yours';
 
-      const html = `<div class="${className}">
-                            <div class="nickname">${payload.nickname}</div>
-                            <div class="message">${payload.message}</div>
-                        </div>`
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message-container');
+      messageElement.innerHTML = `
+                <div class="message ${className}">
+                    <div class="nickname">${payload.nickname}</div>
+                    <div class="content">${payload.message}</div>
+                </div>
+            `;
 
-      chats.insertAdjacentHTML('beforeend', html);
-    }); //,{'auto-delete':true, 'durable':false, 'exclusive':false}); rabbit
+      chatBody.appendChild(messageElement);
+      chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll to the bottom
+    });
 
-    //입장 메세지 전송
-    //stomp.send(`/pub/chat.enter.${chatRoomId}`, {}, JSON.stringify({ rabbit
     stomp.send(`/pub/chat.enter.${chatRoomId}`, {}, JSON.stringify({
       chatRoomId: chatRoomId,
       memberId: 1,
       nickname: nickname
     }));
+  });
 
-  });//, onError, '/');
+  messageForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const message = messageContent.value.trim();
 
-  //메세지 전송 버튼 click
-  btnSend.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const message = messageContent.value;
-    messageContent.value = '';
-
-    //stomp.send(`/pub/chat.message.${chatRoomId}`, {}, JSON.stringify({ rabbit
-    stomp.send(`/pub/chat.message.${chatRoomId}`, {}, JSON.stringify({
-      chatRoomId: chatRoomId,
-      message: message,
-      memberId: 1,
-      nickname: nickname
-    }));
+    if (message !== '') {
+      stomp.send(`/pub/chat.message.${chatRoomId}`, {}, JSON.stringify({
+        chatRoomId: chatRoomId,
+        message: message,
+        memberId: 1,
+        nickname: nickname
+      }));
+      messageContent.value = '';
+    }
   });
 </script>
+
 </body>
 </html>

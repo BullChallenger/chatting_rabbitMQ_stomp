@@ -1,19 +1,52 @@
 syntax = "proto3";
 
-package token;
+package auth;
 
 option java_multiple_files = true;
 option java_package = "com.example.grpc.auth";
-option java_outer_classname = "TokenProto";
+option java_outer_classname = "AuthProto";
 
-service ValidateTokenService {
-  rpc ValidateToken(ValidateTokenRequest) returns (ValidationResult) {}
+message AuthReq {
+  string provider = 1;
+  string provider_user_id = 2;
 }
 
-message ValidateTokenRequest {
+message AuthResp {
+  string access_token = 1;
+  string refresh_token = 2;
+  string error = 3;
+}
+
+message AuthCheckReq {
   string token = 1;
 }
 
-message ValidationResult {
-  bool result = 1;
+message AuthCheckResp {
+  bool valid = 1;
+  string error = 2;
 }
+
+message AuthRefreshReq {
+  string token = 1;
+}
+
+message AuthRefreshResp {
+  string token = 1;
+  string error = 2;
+}
+
+message AuthLogoutReq {
+  string token = 1;
+}
+
+message AuthLogoutResp {
+  string error = 1;
+}
+
+service AuthService {
+  rpc Auth(AuthReq) returns (AuthResp) {}  // 토큰 발급
+  rpc AuthCheck(AuthCheckReq) returns (AuthCheckResp) {} // 토큰 유효성 체크
+  rpc AuthRefresh(AuthRefreshReq) returns (AuthRefreshResp) {} // 토큰 갱신
+  rpc AuthLogout(AuthLogoutReq) returns (AuthLogoutResp) {} // 토큰 삭제
+}
+

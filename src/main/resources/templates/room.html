@@ -165,6 +165,24 @@
       messageContent.value = '';
     }
   });
+
+  const chatMessages = /*[[${chatMessages}]]*/ [];
+
+  chatMessages.forEach(message => {
+    const className = message.nickname === nickname ? 'mine' : 'yours';
+
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message-container');
+    messageElement.innerHTML = `
+                <div class="message ${className}">
+                    <div class="nickname">${message.nickname}</div>
+                    <div class="content">${message.message}</div>
+                </div>
+            `;
+
+    chatBody.appendChild(messageElement);
+    chatBody.scrollTop = chatBody.scrollHeight; // Auto-scroll to the bottom
+  });
 </script>
 
 </body>

@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package accountpb;
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc.account";
+option java_outer_classname = "AccountProto";
+
+message Account {
+  string Id = 1;
+  string Provider = 2;
+  string ProviderUserId = 3;
+  string Nickname = 4;
+  string Role = 5;
+}
+
+service AccountService {
+  rpc CreateAccount(CreateAccountReq) returns (CreateAccountResp);
+  rpc GetAccount(GetAccountReq) returns (GetAccountResp);
+  rpc ListAccounts(ListAccountReq) returns (ListAccountResp);
+  rpc LockAccount(LockAccountReq) returns (LockAccountResp);
+  rpc UnlockAccount(UnlockAccountReq) returns (UnlockAccountResp);
+  rpc ChangeRole(ChangeRoleReq) returns (ChangeRoleResp);
+  rpc DeleteAccount(DeleteAccountReq) returns (DeleteAccountResp);
+  rpc GetAccountByProvider(GetAccountByProviderReq) returns (GetAccountByProviderResp);
+}
+
+// Create
+
+message CreateAccountReq {
+  string Provider = 1;
+  string ProviderUserId = 2;
+}
+
+message CreateAccountResp {
+  string AccountId = 1;
+}
+
+
+// Read
+
+// 모두 조회
+message ListAccountReq {
+}
+
+message ListAccountResp {
+  repeated Account Accounts = 1;
+}
+
+// 단일 조회
+message GetAccountReq {
+  string AccountId = 1;
+}
+
+message GetAccountResp {
+  Account Account = 1;
+}
+
+// get by provider
+
+message GetAccountByProviderReq {
+  string Provider = 1;
+  string ProviderUserId = 2;
+}
+
+message GetAccountByProviderResp {
+  Account Account = 1;
+}
+
+
+
+// Update
+
+// 계정 잠금
+message LockAccountReq {
+  string AccountId = 1;
+}
+
+message LockAccountResp {
+  string AccountId = 1;
+}
+
+// 계정 잠금 해제
+message UnlockAccountReq {
+  string AccountId = 1;
+}
+
+message UnlockAccountResp {
+  string AccountId = 1;
+}
+
+// 계정 권한 변경
+message ChangeRoleReq {
+  string AccountId = 1;
+  string Role = 2;
+}
+
+message ChangeRoleResp {
+  string AccountId = 1;
+}
+
+// Delete
+
+// 계정 삭제
+message DeleteAccountReq {
+  string AccountId = 1;
+}
+
+message DeleteAccountResp {
+  string AccountId = 1;
+}

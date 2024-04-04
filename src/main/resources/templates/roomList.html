@@ -86,7 +86,7 @@
             event.preventDefault();
             var roomId = this.getAttribute('id').split('_')[1];
             var nickname = Math.random().toString(36).substring(2, 10); // 랜덤 문자열 생성
-            window.location.href = '/chat/room?chatRoomId=' + roomId + '&nickname=' + nickname; // 링크 이동
+            window.location.href = '/chat/room?chatRoomId=' + roomId + '&accountId=' + nickname; // 링크 이동
         });
     });
 </script>

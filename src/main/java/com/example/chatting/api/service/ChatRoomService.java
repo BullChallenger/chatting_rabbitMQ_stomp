@@ -33,4 +33,23 @@ public class ChatRoomService {
 			.toList();
 	}
 
+	public UpdateChatRoomResponseDTO update(UpdateChatRoomRequestDTO request) {
+		ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId()).orElseThrow(EntityNotFoundException::new);
+
+		if (!chatRoom.getTitle().equals(request.getTitle())) {
+			chatRoom.updateTitle(request.getTitle());
+		}
+
+		if (!chatRoom.getDescription().equals(request.getDescription())) {
+			chatRoom.updateDescription(request.getDescription());
+		}
+
+		return UpdateChatRoomResponseDTO.fromEntity(chatRoom);
+	}
+
+	public String deleteBy(String chatRoomId) {
+		chatRoomRepository.deleteById(chatRoomId);
+		return "채팅방이 성공적으로 삭제됐습니다.";
+	}
+
 }

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package token;
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc.chat";
+option java_outer_classname = "ChatRoomProto";
+
+service ChatRoomGrpcService {
+  rpc IsChatRoomOpened(ValidateChatRoomOpenRequest) returns (ChatRoomValidationResult) {}
+}
+
+message ValidateChatRoomOpenRequest {
+  string clientId = 1;
+  string agentId = 2;
+}
+
+message ChatRoomValidationResult {
+  bool result = 1;
+}

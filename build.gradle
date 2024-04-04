@@ -54,6 +54,7 @@ dependencies {
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
     implementation 'net.devh:grpc-client-spring-boot-starter:2.15.0.RELEASE'
+    implementation 'net.devh:grpc-server-spring-boot-starter:2.15.0.RELEASE'
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5'
 }
 

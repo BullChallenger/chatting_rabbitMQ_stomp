@@ -12,12 +12,19 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomDTO {
 
 	@Getter
-	@RequiredArgsConstructor
 	public static class ChatRoomRequestDTO {
 		private final String title;
 		private final String description;
 		private final String clientId;
 		private final String brokerId;
+
+		@Builder
+		public ChatRoomRequestDTO(String title, String description, String clientId, String brokerId) {
+			this.title = title;
+			this.description = description;
+			this.clientId = clientId;
+			this.brokerId = brokerId;
+		}
 	}
 
 	@Getter
@@ -42,7 +49,7 @@ public class ChatRoomDTO {
 			return ChatRoomResponseDTO.builder()
 					.id(entity.getId())
 					.title(entity.getTitle())
-					.description(entity.getTitle())
+					.description(entity.getDescription())
 					.clientId(entity.getClientId())
 					.brokerId(entity.getBrokerId())
 				.build();

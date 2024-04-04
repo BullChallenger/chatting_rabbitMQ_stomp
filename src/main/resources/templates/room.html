@@ -124,7 +124,7 @@
   stomp.heartbeat.outgoing = 0;
   stomp.heartbeat.incoming = 0;
 
-  stomp.connect('guest', 'guest', function (frame) {
+  stomp.connect({id: 'guest', password: 'guest', Authorization: 'RIGHT_TOKEN'}, function (frame) {
     console.log('STOMP Connected');
 
     stomp.subscribe(`/exchange/chat.exchange/room.${chatRoomId}`, function (content) {

@@ -1,6 +1,5 @@
 package com.example.chatting.api.service;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import org.springframework.stereotype.Service;

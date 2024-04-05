@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.chatting.api.dto.request.ChatRoomDTO.*;
+import com.example.chatting.api.dto.ChatRoomDTO.*;
+import com.example.chatting.api.dto.ContractDTO.*;
 import com.example.chatting.api.service.ChatMessageService;
 import com.example.chatting.api.service.ChatRoomService;
 
@@ -72,4 +73,9 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomService.deleteBy(chatRoomId));
     }
 
-}
+    @PostMapping(value = "/room/contract/create")
+    public ResponseEntity<MakeContractResponseDTO> contract(@RequestBody MakeContractRequestDTO request) {
+        return ResponseEntity.ok(chatRoomService.makeContract(request));
+    }
+
+ }

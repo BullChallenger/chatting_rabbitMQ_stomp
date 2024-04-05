@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.chatting.api.dto.request.ChatRoomDTO.*;
+import com.example.chatting.api.dto.ChatRoomDTO.*;
 import com.example.chatting.domain.chatRoom.ChatRoom;
 import com.example.chatting.domain.chatRoom.ChatRoomRepository;
 import com.example.chatting.fixture.ChatRoomFixture;

@@ -1,9 +1,8 @@
 package com.example.chatting.domain.chatRoom;
 
-import java.security.MessageDigest;
 import java.util.UUID;
 
-import com.example.chatting.api.dto.request.ChatRoomDTO.*;
+import com.example.chatting.api.dto.ChatRoomDTO.*;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

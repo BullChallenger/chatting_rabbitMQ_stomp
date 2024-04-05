@@ -4,9 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.chatting.api.dto.request.ChatRoomDTO.*;
+import net.devh.boot.grpc.client.inject.GrpcClient;
+
+import com.example.chatting.api.dto.ChatRoomDTO.*;
+import com.example.chatting.api.dto.ContractDTO.*;
 import com.example.chatting.domain.chatRoom.ChatRoom;
 import com.example.chatting.domain.chatRoom.ChatRoomRepository;
+import com.example.grpc.contract.ContractGrpcServiceGrpc;
+import com.example.grpc.contract.MakeContractRequest;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRepository;
+
+	@GrpcClient(value = "contract-server")
+	private ContractGrpcServiceGrpc.ContractGrpcServiceBlockingStub contractGrpcServiceBlockingStub;
 
 	public ChatRoomResponseDTO create(ChatRoomRequestDTO request) {
 		return ChatRoomResponseDTO.fromEntity(chatRoomRepository.save(ChatRoom.toEntity(request)));
@@ -52,4 +60,14 @@ public class ChatRoomService {
 		return "채팅방이 성공적으로 삭제됐습니다.";
 	}
 
+	public MakeContractResponseDTO makeContract(MakeContractRequestDTO request) {
+		MakeContractRequest makeContractRequest = MakeContractRequest.newBuilder()
+			.setClientId(request.getClientId())
+			.setAgentId(request.getAgentId())
+			.build();
+
+		return new MakeContractResponseDTO(contractGrpcServiceBlockingStub
+			.makeContractForParticipants(makeContractRequest).getContractId()
+		);
+	}
 }

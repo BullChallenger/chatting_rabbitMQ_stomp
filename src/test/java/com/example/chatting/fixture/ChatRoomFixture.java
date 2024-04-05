@@ -2,7 +2,7 @@ package com.example.chatting.fixture;
 
 import java.util.UUID;
 
-import com.example.chatting.api.dto.request.ChatRoomDTO;
+import com.example.chatting.api.dto.ChatRoomDTO;
 import com.example.chatting.domain.chatRoom.ChatRoom;
 
 public class ChatRoomFixture {

@@ -78,6 +78,14 @@ protobuf {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs += [ './src/generated/main/grpc', 'src/generated/main/java' ]
+        }
+    }
+}
+
 tasks.named('bootBuildImage') {
     builder = 'paketobuildpacks/builder-jammy-base:latest'
 }

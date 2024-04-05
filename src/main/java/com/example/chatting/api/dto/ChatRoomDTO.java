@@ -1,4 +1,4 @@
-package com.example.chatting.api.dto.request;
+package com.example.chatting.api.dto;
 
 import java.util.Arrays;
 import java.util.List;

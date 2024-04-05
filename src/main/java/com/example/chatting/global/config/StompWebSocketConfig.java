@@ -1,7 +1,5 @@
 package com.example.chatting.global.config;
 
-import java.util.List;
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -18,8 +16,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import net.devh.boot.grpc.client.inject.GrpcClient;
 
-import com.example.grpc.auth.ValidateTokenRequest;
-import com.example.grpc.auth.ValidateTokenServiceGrpc;
+import com.example.grpc.auth.AuthCheckReq;
+import com.example.grpc.auth.AuthServiceGrpc;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @GrpcClient("auth-server")
-    private ValidateTokenServiceGrpc.ValidateTokenServiceBlockingStub validateTokenServiceStub;
+    private AuthServiceGrpc.AuthServiceBlockingStub authServiceBlockingStub;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -58,9 +56,9 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 log.info("Authorization Token : {}", token);
 
                 if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    boolean isValidate = validateTokenServiceStub.validateToken(
-                        ValidateTokenRequest.newBuilder().setToken(token).build()
-                    ).getResult();
+                    boolean isValidate = authServiceBlockingStub.authCheck(
+                        AuthCheckReq.newBuilder().setToken(token).build()
+                    ).getValid();
 
                     if (isValidate) {
                         return ChannelInterceptor.super.preSend(message, channel);

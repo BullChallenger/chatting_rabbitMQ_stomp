@@ -1,8 +1,12 @@
 package com.example.chatting.domain.chatRoom;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import com.example.chatting.api.dto.ChatRoomDTO.*;
+import com.example.grpc.chat.ChatRoomRequest;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,35 +23,25 @@ public class ChatRoom {
 	@Id
 	private String id;
 
-	private String title;
-	private String description;
 	private String clientId;
-	private String brokerId;
+	private String agentId;
+
+	@CreatedDate
+	private LocalDateTime createdAt;
 
 	@Builder
-	public ChatRoom(String id, String title, String description, String clientId, String brokerId) {
+	public ChatRoom(String id, String clientId, String agentId) {
 		this.id = id;
-		this.title = title;
-		this.description = description;
 		this.clientId = clientId;
-		this.brokerId = brokerId;
+		this.agentId = agentId;
 	}
 
-	public static ChatRoom toEntity(ChatRoomRequestDTO dto) {
+	public static ChatRoom toEntity(ChatRoomRequest gRPCRequest) {
 		return ChatRoom.builder()
 				.id(UUID.randomUUID().toString())
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.clientId(dto.getClientId())
-				.brokerId(dto.getBrokerId())
+				.clientId(gRPCRequest.getClientId())
+				.agentId(gRPCRequest.getAgentId())
 			.build();
 	}
 
-	public void updateTitle(String title) {
-		this.title = title;
-	}
-
-	public void updateDescription(String description) {
-		this.description = description;
-	}
 }

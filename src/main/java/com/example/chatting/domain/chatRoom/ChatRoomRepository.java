@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 
-	boolean existsByBrokerIdAndClientId(String brokerId, String clientId);
-	List<ChatRoom> findAllByBrokerId(String brokerId);
+	boolean existsByAgentIdAndClientId(String brokerId, String clientId);
+	List<ChatRoom> findAllByAgentId(String agentId);
+	List<ChatRoom> findAllByClientId(String clientId);
 
 }

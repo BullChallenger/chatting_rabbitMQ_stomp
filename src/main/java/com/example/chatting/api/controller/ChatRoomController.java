@@ -18,6 +18,7 @@ import com.example.chatting.api.dto.ChatRoomDTO.*;
 import com.example.chatting.api.dto.ContractDTO.*;
 import com.example.chatting.api.service.ChatMessageService;
 import com.example.chatting.api.service.ChatRoomService;
+import com.example.grpc.zip.ZipGrpcServiceGrpc;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,16 +29,6 @@ public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
-
-    @GetMapping(value = "/room/create")
-    public String createPage() {
-        return "createRoom";
-    }
-
-    @PostMapping(value = "/room")
-    public ResponseEntity<ChatRoomResponseDTO> create(@RequestBody ChatRoomRequestDTO request) {
-        return ResponseEntity.ok(chatRoomService.create(request));
-    }
 
     @GetMapping(value = "/{brokerId}/room")
     public String findAllBy(@PathVariable(value = "brokerId") String brokerId, Model model) {
@@ -63,19 +54,9 @@ public class ChatRoomController {
         return "room";
     }
 
-    @PutMapping(value = "/room/update")
-    public ResponseEntity<UpdateChatRoomResponseDTO> update(@RequestBody UpdateChatRoomRequestDTO request) {
-        return ResponseEntity.ok(chatRoomService.update(request));
-    }
-
     @DeleteMapping(value = "/room/{chatRoomId}")
     public ResponseEntity<String> delete(@PathVariable String chatRoomId) {
         return ResponseEntity.ok(chatRoomService.deleteBy(chatRoomId));
-    }
-
-    @PostMapping(value = "/room/contract/create")
-    public ResponseEntity<MakeContractResponseDTO> contract(@RequestBody MakeContractRequestDTO request) {
-        return ResponseEntity.ok(chatRoomService.makeContract(request));
     }
 
  }

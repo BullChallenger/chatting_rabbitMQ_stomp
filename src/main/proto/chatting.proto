@@ -10,7 +10,7 @@ service ChatRoomGrpcService {
   rpc CreateChatRoom(ChatRoomRequest) returns (ChatRoomResponse) {} // 채팅방 생성
   rpc EnterChatRoom(ChatRoomIdRequest) returns (ChatRoomResponse) {} // 채팅방 입장
   rpc FindAllByAgentId(AgentIdRequest) returns (ChatRoomListResponse) {} // 중개사가 속한 채팅방
-  rpc FindAllByClientId(AgentIdRequest) returns (ChatRoomListResponse) {} // 중개사가 속한 채팅방
+  rpc FindAllByClientId(ClientIdRequest) returns (ChatRoomListResponse) {} // 중개사가 속한 채팅방
   rpc ExitChatRoom(ChatRoomIdRequest) returns (ExitChatRoomResponse) {} // 채팅방 나가기
   rpc IsChatRoomOpened(ChatRoomRequest) returns (ChatRoomValidationResult) {} // 채팅방이 열려있는지 확인
 }
@@ -39,7 +39,8 @@ message ChatRoomListResponse {
 message ChatRoomInfoResponse {
   string id = 1;
   string nickname = 2;
-  string createdAt = 3;
+  string lastMessage = 3;
+  string createdAt = 4;
 }
 
 message ChatRoomResponse {

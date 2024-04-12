@@ -4,10 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import net.devh.boot.grpc.client.inject.GrpcClient;
-
 import com.example.chatting.api.dto.ChatRoomDTO.*;
-import com.example.chatting.api.dto.ContractDTO.*;
 import com.example.chatting.domain.chatRoom.ChatRoom;
 import com.example.chatting.domain.chatRoom.ChatRoomRepository;
 

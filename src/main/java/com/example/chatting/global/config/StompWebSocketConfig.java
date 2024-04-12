@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @GrpcClient("auth-server")
-    private AuthServiceGrpc.AuthServiceBlockingStub authServiceBlockingStub;
+    // @GrpcClient("auth-server")
+    // private AuthServiceGrpc.AuthServiceBlockingStub authServiceBlockingStub;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -39,36 +39,36 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue");
+        config.enableStompBrokerRelay("/exchange");
         config.setPathMatcher(new AntPathMatcher("."));
         config.setApplicationDestinationPrefixes("/pub");
     }
 
-    @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptor() {
-
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-
-				String token = accessor.getFirstNativeHeader("Authorization");
-                log.info("Authorization Token : {}", token);
-
-                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-                    boolean isValidate = authServiceBlockingStub.authCheck(
-                        AuthCheckReq.newBuilder().setToken(token).build()
-                    ).getValid();
-
-                    if (isValidate) {
-                        return ChannelInterceptor.super.preSend(message, channel);
-                    } else {
-                        throw new IllegalArgumentException("토큰 틀림");
-                    }
-                }
-
-                return ChannelInterceptor.super.preSend(message, channel);
-            }
-        });
-    }
+    // @Override
+    // public void configureClientInboundChannel(ChannelRegistration registration) {
+    //     registration.interceptors(new ChannelInterceptor() {
+    //
+    //         @Override
+    //         public Message<?> preSend(Message<?> message, MessageChannel channel) {
+    //             StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+    //
+	// 			String token = accessor.getFirstNativeHeader("Authorization");
+    //             log.info("Authorization Token : {}", token);
+    //
+    //             if (StompCommand.CONNECT.equals(accessor.getCommand())) {
+    //                 boolean isValidate = authServiceBlockingStub.authCheck(
+    //                     AuthCheckReq.newBuilder().setToken(token).build()
+    //                 ).getValid();
+    //
+    //                 if (isValidate) {
+    //                     return ChannelInterceptor.super.preSend(message, channel);
+    //                 } else {
+    //                     throw new IllegalArgumentException("토큰 틀림");
+    //                 }
+    //             }
+    //
+    //             return ChannelInterceptor.super.preSend(message, channel);
+    //         }
+    //     });
+    // }
 }

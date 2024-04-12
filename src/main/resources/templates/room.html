@@ -126,6 +126,7 @@
 
   stomp.connect({id: 'guest', password: 'guest', Authorization: 'RIGHT_TOKEN'}, function (frame) {
     console.log('STOMP Connected');
+    console.log(chatRoomId);
 
     stomp.subscribe(`/exchange/chat.exchange/room.${chatRoomId}`, function (content) {
       const payload = JSON.parse(content.body);

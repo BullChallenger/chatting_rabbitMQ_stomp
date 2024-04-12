@@ -1,24 +1,35 @@
 package com.example.chatting.api.controller;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.example.chatting.api.dto.ChatRoomDTO.*;
-import com.example.chatting.api.dto.ContractDTO.*;
+import com.example.chatting.api.dto.SseEmitters;
 import com.example.chatting.api.service.ChatMessageService;
 import com.example.chatting.api.service.ChatRoomService;
-import com.example.grpc.zip.ZipGrpcServiceGrpc;
+import com.example.chatting.domain.chatRoom.ChatRoom;
+import com.example.chatting.domain.chatRoom.ChatRoomRepository;
+import com.example.chatting.domain.message.ChatMessage;
+import com.example.chatting.domain.message.ChatMessageRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,14 +38,81 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class ChatRoomController {
 
+    private Set<SseEmitter> connections = new HashSet<>();
+
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+    private final ChatMessageRepository chatMessageRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final SseEmitters sseEmitters;
 
+    @GetMapping(value = "/connect/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> connect(@PathVariable(value = "chatRoomId") String chatRoomId) {
+        SseEmitter emitter = new SseEmitter();
+        System.out.println("chatRoomId = " + chatRoomId);
+
+        sseEmitters.add(emitter);
+        try {
+            emitter.send(SseEmitter.event()
+                .name("connect")
+                .data("connected!"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return ResponseEntity.ok(emitter);
+    }
+
+    @ResponseBody
+    @CrossOrigin("*")
+    @PostMapping(value = "/create")
+    public ResponseEntity<ChatRoomResponseDTO> create(@RequestBody ChatRoomRequestDTO request) {
+        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
+            .id(UUID.randomUUID().toString())
+            .clientId(request.getClientId())
+            .agentId(request.getBrokerId())
+            .build()
+        );
+
+        chatMessageRepository.save(new ChatMessage(
+            UUID.randomUUID().toString(), chatRoom.getId(),
+            "admin", "admin",
+            "채팅방이 생성되었습니다.", LocalDateTime.now()
+        ));
+
+        return ResponseEntity.ok(ChatRoomResponseDTO.fromEntity(chatRoom));
+    }
+
+    @ResponseBody
+    @CrossOrigin("*")
     @GetMapping(value = "/{brokerId}/room")
+    public ResponseEntity<List<ChatRoomResponseDTO>> findAllByJson(@PathVariable(value = "brokerId") String brokerId) {
+        List<ChatRoomResponseDTO> chatRooms = chatRoomService.findAllBy(brokerId);
+
+        chatRooms.forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
+            chatMessageService.findLatestMessageInChatRoom(chatRoomResponseDTO.getId()))
+        );
+
+        return ResponseEntity.ok(chatRooms);
+    }
+
+    @GetMapping(value = "/{brokerId}/room/th")
     public String findAllBy(@PathVariable(value = "brokerId") String brokerId, Model model) {
         List<ChatRoomResponseDTO> chatRooms = chatRoomService.findAllBy(brokerId);
         model.addAttribute("chatRooms", chatRooms);
         return "roomList";
+    }
+
+    @ResponseBody
+    @CrossOrigin("*")
+    @GetMapping(value = "/room/resp")
+    public ResponseEntity<ChatRoomResponseDTO> enterRoom(@RequestParam String chatRoomId, @RequestParam String accountId, Model model){
+        ChatRoomResponseDTO chatRoom = chatRoomService.findBy(chatRoomId);
+
+        if (chatRoom.getParticipantIds().contains(accountId)) {
+            chatRoom.setChatMessagesInRoom(chatMessageService.findAllChatMessageBy(chatRoomId));
+        }
+
+        return ResponseEntity.ok(chatRoom);
     }
 
     @GetMapping(value = "/room")

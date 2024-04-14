@@ -2,6 +2,7 @@ package com.example.chatting.domain.message;
 
 import java.time.LocalDateTime;
 
+import lombok.ToString;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 @Document(collection = "chat-message")
 public class ChatMessage {
 

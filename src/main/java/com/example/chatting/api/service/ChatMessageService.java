@@ -35,7 +35,7 @@ public class ChatMessageService {
     public void receiveMessage(ChatMessage message) {
         message.initChatMessageId(UUID.randomUUID().toString());
         message.createdAt(LocalDateTime.now());
-        sseEmitters.count(message);
+        sseEmitters.count(message.getChatRoomId(), message);
         log.info("Received message: {}", chatMessageRepository.save(message));
     }
 

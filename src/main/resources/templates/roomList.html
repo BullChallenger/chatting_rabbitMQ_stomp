@@ -71,24 +71,40 @@
             <td th:text="${room.description}">Room Description</td>
             <td th:text="${room.clientId}">Client ID</td>
             <td th:text="${room.brokerId}">Broker ID</td>
+            <td id="latestMessage">Action</td>
             <td>
                 <!-- JavaScript를 사용하여 페이지 로드 시 자동으로 SSE 연결을 설정 -->
-                <script>
+                <script th:inline="javascript">
                     (function() {
-                        var roomId = [${room.id}]*/;
+                        var roomId = [[${room.id}]];
                         var nickname = Math.random().toString(36).substring(2, 10); // 랜덤 문자열 생성
 
                         // 해당 채팅방에 대한 SSE 연결 설정
                         console.log(roomId)
-                        var eventSource = new EventSource('/connect/' + roomId);
+                        var eventSource = new EventSource(`/chat/connect/` + roomId);
 
                         eventSource.addEventListener('connect', function(e) {
                             console.log('connect event data: ', e.data);  // "connected!"
                         });
 
-                        eventSource.addEventListener('count', function(e) {
+                        eventSource.addEventListener('chat', function(e) {
                             console.log('count event data: ', e.data);  // count 이벤트 처리
+                            // 여기서 e.data를 적절히 처리하여 원하는 작업을 수행할 수 있습니다.
+                            var eventData = JSON.parse(e.data);
+                            var chatRoomId = eventData.chatRoomId; // 이벤트 데이터에서 채팅방 ID 가져오기
+                            var message = eventData.message; // 이벤트 데이터에서 메시지 가져오기
+
+                            // 해당 채팅방 행의 "Action" 열을 선택하여 새로운 메시지를 반영
+                            var actionColumn = document.querySelector('#latestMessage');
+                            actionColumn.textContent = message;
                         });
+
+                        var button = document.createElement('button');
+                        button.textContent = 'Join Room';
+                        button.onclick = function() {
+                            window.location.href = '/chat/room?chatRoomId=' + roomId + '&accountId=' + nickname;
+                        };
+                        document.body.appendChild(button);
                     })();
                 </script>
             </td>

@@ -38,20 +38,17 @@ import lombok.RequiredArgsConstructor;
 @Controller
 public class ChatRoomController {
 
-    private Set<SseEmitter> connections = new HashSet<>();
-
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final SseEmitters sseEmitters;
 
+    @CrossOrigin("*")
     @GetMapping(value = "/connect/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> connect(@PathVariable(value = "chatRoomId") String chatRoomId) {
-        SseEmitter emitter = new SseEmitter();
-        System.out.println("chatRoomId = " + chatRoomId);
-
-        sseEmitters.add(emitter);
+        System.out.println("Connected!");
+        SseEmitter emitter = sseEmitters.add(chatRoomId);
         try {
             emitter.send(SseEmitter.event()
                 .name("connect")
@@ -59,6 +56,7 @@ public class ChatRoomController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("Send!");
         return ResponseEntity.ok(emitter);
     }
 

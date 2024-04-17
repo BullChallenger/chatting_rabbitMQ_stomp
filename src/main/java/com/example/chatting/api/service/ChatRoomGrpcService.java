@@ -73,13 +73,13 @@ public class ChatRoomGrpcService extends ChatRoomGrpcServiceGrpc.ChatRoomGrpcSer
 		responseObserver.onCompleted();
 	}
 
-	@Override
-	public void findAllByClientId(ClientIdRequest request, StreamObserver<ChatRoomListResponse> responseObserver) {
-		List<ChatRoom> allByClientId = chatRoomRepository.findAllByClientId(request.getClientId());
-
-		responseObserver.onNext(ChatRoomListResponse.newBuilder().addAllChatRooms(getAgentNicknameFromAccountServer(allByClientId)).build());
-		responseObserver.onCompleted();
-	}
+//	@Override
+//	public void findAllByClientId(ClientIdRequest request, StreamObserver<ChatRoomListResponse> responseObserver) {
+//		List<ChatRoom> allByClientId = chatRoomRepository.findAllByClientId(request.getClientId());
+//
+//		responseObserver.onNext(ChatRoomListResponse.newBuilder().addAllChatRooms(getAgentNicknameFromAccountServer(allByClientId)).build());
+//		responseObserver.onCompleted();
+//	}
 
 	@Override
 	public void exitChatRoom(ChatRoomIdRequest request, StreamObserver<ExitChatRoomResponse> responseObserver) {

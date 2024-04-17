@@ -1,6 +1,5 @@
 package com.example.chatting.api.dto;
 
-import com.example.chatting.domain.chatRoom.SseRepository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class SseEmitters {
 
-	private final SseRepository sseRepository;
 	private Map<String, List<SseEmitter>> emitters = new ConcurrentHashMap<>();
 
 	public void count(String chatRoomId, ChatMessage message) {
 		if (!emitters.containsKey(chatRoomId)) {
 			CopyOnWriteArrayList<SseEmitter> sseEmitters = new CopyOnWriteArrayList<>();
-			sseEmitters.add(new SseEmitter(300000L));
+			sseEmitters.add(new SseEmitter(300L));
 			this.emitters.put(chatRoomId, sseEmitters);
 		}
 		this.emitters.get(chatRoomId).forEach(emitter -> {
@@ -37,6 +35,7 @@ public class SseEmitters {
 				emitter.send(SseEmitter.event()
 						.name("chat")
 						.data(message));
+				emitter.complete();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -44,7 +43,6 @@ public class SseEmitters {
 	}
 
 	public SseEmitter add(String chatRoomId) {
-		sseRepository.addSse(chatRoomId);
 		List<SseEmitter> emitterList = emitters.getOrDefault(chatRoomId, new CopyOnWriteArrayList<>());
 		SseEmitter emitter = new SseEmitter(300000L);
 		emitterList.add(emitter);
@@ -62,7 +60,6 @@ public class SseEmitters {
 		emitter.onTimeout(() -> {
 			log.info("onTimeout callback");
 			emitters.get(chatRoomId).remove(emitter);   // 만료되면 리스트에서 삭제
-			emitter.complete();
 		});
 
 		return emitter;

@@ -53,6 +53,8 @@ public class ChatRoomController {
             emitter.send(SseEmitter.event()
                 .name("connect")
                 .data("connected!"));
+
+            System.out.println("Send SSE!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

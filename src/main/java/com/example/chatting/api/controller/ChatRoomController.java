@@ -36,20 +36,17 @@ public class ChatRoomController {
 
     @CrossOrigin("*")
     @GetMapping(value = "/connect/{chatRoomId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> connect(@PathVariable(value = "chatRoomId") String chatRoomId) {
-        System.out.println("Connected!");
+    public SseEmitter connect(@PathVariable(value = "chatRoomId") String chatRoomId) {
         SseEmitter emitter = sseEmitters.add(chatRoomId);
         try {
             emitter.send(SseEmitter.event()
                     .name("connect")
                     .data("connected!"));
 
-            System.out.println("Send SSE!");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Send!");
-        return ResponseEntity.ok(emitter);
+        return emitter;
     }
 
     @ResponseBody
@@ -78,7 +75,7 @@ public class ChatRoomController {
     public ResponseEntity<List<ChatRoomListResponseDTO>> findAllByJson(@PathVariable(value = "brokerId") String brokerId) {
         List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(brokerId);
 
-        chatRooms.forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
+        chatRooms.stream().filter(chatRoomListResponseDTO -> !chatRoomListResponseDTO.getNickname().equals("admin")).forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
             chatMessageService.findLatestMessageInChatRoom(chatRoomResponseDTO.getId()))
         );
 

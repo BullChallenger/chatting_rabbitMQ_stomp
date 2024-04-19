@@ -27,7 +27,6 @@ public class ChatMessageService {
     private String EXCHANGE_NAME;
 
     public void sendMessage(ChatMessage message) {
-        log.info("message sent: {}", message.toString());
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, "room." + message.getChatRoomId(), message);
     }
 
@@ -36,7 +35,7 @@ public class ChatMessageService {
         message.initChatMessageId(UUID.randomUUID().toString());
         message.createdAt(LocalDateTime.now());
         sseEmitters.count(message.getChatRoomId(), message);
-        log.info("Received message:  {}", chatMessageRepository.save(message));
+        chatMessageRepository.save(message);
     }
 
     public List<ChatMessage> findAllChatMessageBy(String chatRoomId) {

@@ -25,17 +25,12 @@ public class SseEmitters {
 	private Map<String, List<SseEmitter>> emitters = new ConcurrentHashMap<>();
 
 	public void count(String chatRoomId, ChatMessage message) {
-		if (!emitters.containsKey(chatRoomId)) {
-			CopyOnWriteArrayList<SseEmitter> sseEmitters = new CopyOnWriteArrayList<>();
-			sseEmitters.add(new SseEmitter(300000L));
-			this.emitters.put(chatRoomId, sseEmitters);
-		}
 		this.emitters.get(chatRoomId).forEach(emitter -> {
 			try {
 				emitter.send(SseEmitter.event()
 						.name("chat")
 						.data(message));
-				// emitter.complete();
+				emitter.complete();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -52,13 +47,10 @@ public class SseEmitters {
 			this.emitters.put(chatRoomId, emitterList);
 		}
 
-		log.info("new emitter added: {}", emitter);
 		emitter.onCompletion(() -> {
-			log.info("onCompletion callback");
 			emitters.get(chatRoomId).remove(emitter);   // 만료되면 리스트에서 삭제
 		});
 		emitter.onTimeout(() -> {
-			log.info("onTimeout callback");
 			emitters.get(chatRoomId).remove(emitter);   // 만료되면 리스트에서 삭제
 		});
 

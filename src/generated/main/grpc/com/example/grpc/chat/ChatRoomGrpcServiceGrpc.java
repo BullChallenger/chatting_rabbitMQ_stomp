@@ -108,27 +108,27 @@ public final class ChatRoomGrpcServiceGrpc {
     return getFindAllByAgentIdMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.example.grpc.chat.AgentIdRequest,
+  private static volatile io.grpc.MethodDescriptor<com.example.grpc.chat.ClientIdRequest,
       com.example.grpc.chat.ChatRoomListResponse> getFindAllByClientIdMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "FindAllByClientId",
-      requestType = com.example.grpc.chat.AgentIdRequest.class,
+      requestType = com.example.grpc.chat.ClientIdRequest.class,
       responseType = com.example.grpc.chat.ChatRoomListResponse.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.example.grpc.chat.AgentIdRequest,
+  public static io.grpc.MethodDescriptor<com.example.grpc.chat.ClientIdRequest,
       com.example.grpc.chat.ChatRoomListResponse> getFindAllByClientIdMethod() {
-    io.grpc.MethodDescriptor<com.example.grpc.chat.AgentIdRequest, com.example.grpc.chat.ChatRoomListResponse> getFindAllByClientIdMethod;
+    io.grpc.MethodDescriptor<com.example.grpc.chat.ClientIdRequest, com.example.grpc.chat.ChatRoomListResponse> getFindAllByClientIdMethod;
     if ((getFindAllByClientIdMethod = ChatRoomGrpcServiceGrpc.getFindAllByClientIdMethod) == null) {
       synchronized (ChatRoomGrpcServiceGrpc.class) {
         if ((getFindAllByClientIdMethod = ChatRoomGrpcServiceGrpc.getFindAllByClientIdMethod) == null) {
           ChatRoomGrpcServiceGrpc.getFindAllByClientIdMethod = getFindAllByClientIdMethod =
-              io.grpc.MethodDescriptor.<com.example.grpc.chat.AgentIdRequest, com.example.grpc.chat.ChatRoomListResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.example.grpc.chat.ClientIdRequest, com.example.grpc.chat.ChatRoomListResponse>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "FindAllByClientId"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.example.grpc.chat.AgentIdRequest.getDefaultInstance()))
+                  com.example.grpc.chat.ClientIdRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.example.grpc.chat.ChatRoomListResponse.getDefaultInstance()))
               .setSchemaDescriptor(new ChatRoomGrpcServiceMethodDescriptorSupplier("FindAllByClientId"))
@@ -272,7 +272,7 @@ public final class ChatRoomGrpcServiceGrpc {
 
     /**
      */
-    default void findAllByClientId(com.example.grpc.chat.AgentIdRequest request,
+    default void findAllByClientId(com.example.grpc.chat.ClientIdRequest request,
         io.grpc.stub.StreamObserver<com.example.grpc.chat.ChatRoomListResponse> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getFindAllByClientIdMethod(), responseObserver);
     }
@@ -345,7 +345,7 @@ public final class ChatRoomGrpcServiceGrpc {
 
     /**
      */
-    public void findAllByClientId(com.example.grpc.chat.AgentIdRequest request,
+    public void findAllByClientId(com.example.grpc.chat.ClientIdRequest request,
         io.grpc.stub.StreamObserver<com.example.grpc.chat.ChatRoomListResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getFindAllByClientIdMethod(), getCallOptions()), request, responseObserver);
@@ -407,7 +407,7 @@ public final class ChatRoomGrpcServiceGrpc {
 
     /**
      */
-    public com.example.grpc.chat.ChatRoomListResponse findAllByClientId(com.example.grpc.chat.AgentIdRequest request) {
+    public com.example.grpc.chat.ChatRoomListResponse findAllByClientId(com.example.grpc.chat.ClientIdRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getFindAllByClientIdMethod(), getCallOptions(), request);
     }
@@ -470,7 +470,7 @@ public final class ChatRoomGrpcServiceGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.example.grpc.chat.ChatRoomListResponse> findAllByClientId(
-        com.example.grpc.chat.AgentIdRequest request) {
+        com.example.grpc.chat.ClientIdRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getFindAllByClientIdMethod(), getCallOptions()), request);
     }
@@ -529,7 +529,7 @@ public final class ChatRoomGrpcServiceGrpc {
               (io.grpc.stub.StreamObserver<com.example.grpc.chat.ChatRoomListResponse>) responseObserver);
           break;
         case METHODID_FIND_ALL_BY_CLIENT_ID:
-          serviceImpl.findAllByClientId((com.example.grpc.chat.AgentIdRequest) request,
+          serviceImpl.findAllByClientId((com.example.grpc.chat.ClientIdRequest) request,
               (io.grpc.stub.StreamObserver<com.example.grpc.chat.ChatRoomListResponse>) responseObserver);
           break;
         case METHODID_EXIT_CHAT_ROOM:
@@ -583,7 +583,7 @@ public final class ChatRoomGrpcServiceGrpc {
           getFindAllByClientIdMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
-              com.example.grpc.chat.AgentIdRequest,
+              com.example.grpc.chat.ClientIdRequest,
               com.example.grpc.chat.ChatRoomListResponse>(
                 service, METHODID_FIND_ALL_BY_CLIENT_ID)))
         .addMethod(

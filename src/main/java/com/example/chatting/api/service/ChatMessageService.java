@@ -1,8 +1,10 @@
 package com.example.chatting.api.service;
 
+import com.example.chatting.api.dto.SseEmitters;
 import com.example.chatting.domain.message.ChatMessage;
 import com.example.chatting.domain.message.ChatMessageRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatMessageService {
 
+    private final SseEmitters sseEmitters;
     private final RabbitTemplate rabbitTemplate;
     private final ChatMessageRepository chatMessageRepository;
 
@@ -30,12 +33,18 @@ public class ChatMessageService {
 
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveMessage(ChatMessage message) {
-        message.setId(UUID.randomUUID().toString());
-        log.info("Received message: {}", chatMessageRepository.save(message));
+        message.initChatMessageId(UUID.randomUUID().toString());
+        message.createdAt(LocalDateTime.now());
+        sseEmitters.count(message.getChatRoomId(), message);
+        log.info("Received message:  {}", chatMessageRepository.save(message));
     }
 
     public List<ChatMessage> findAllChatMessageBy(String chatRoomId) {
         return chatMessageRepository.findAllByChatRoomId(chatRoomId);
+    }
+
+    public String findLatestMessageInChatRoom(String chatRoomId) {
+        return chatMessageRepository.findLatestMessageInChatRoom(chatRoomId);
     }
 
 }

@@ -1,17 +1,22 @@
 package com.example.chatting.domain.message;
 
+import java.time.LocalDateTime;
+
+import lombok.ToString;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@ToString
 @Document(collection = "chat-message")
 public class ChatMessage {
 
@@ -21,5 +26,15 @@ public class ChatMessage {
     private String accountId;
     private String nickname;
     private String message;
+
+    private LocalDateTime createdAt;
+
+    public void initChatMessageId(String id) {
+        this.id = id;
+    }
+
+    public void createdAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
 }

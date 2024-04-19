@@ -56,6 +56,12 @@ dependencies {
     implementation 'net.devh:grpc-client-spring-boot-starter:2.15.0.RELEASE'
     implementation 'net.devh:grpc-server-spring-boot-starter:2.15.0.RELEASE'
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5'
+
+    // Redis
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 protobuf {

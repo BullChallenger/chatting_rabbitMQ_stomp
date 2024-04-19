@@ -26,9 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @GrpcClient("auth-server")
-    private AuthServiceGrpc.AuthServiceBlockingStub authServiceBlockingStub;
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
@@ -39,11 +36,12 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+        config.enableStompBrokerRelay("/exchange")
                 .setRelayHost("173.100.0.11")
                 .setRelayPort(61613)
                 .setClientPasscode("guest")
                 .setClientLogin("guest");
+
         config.setPathMatcher(new AntPathMatcher("."));
         config.setApplicationDestinationPrefixes("/pub");
     }

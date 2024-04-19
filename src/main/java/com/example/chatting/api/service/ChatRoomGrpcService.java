@@ -69,17 +69,20 @@ public class ChatRoomGrpcService extends ChatRoomGrpcServiceGrpc.ChatRoomGrpcSer
 	public void findAllByAgentId(AgentIdRequest request, StreamObserver<ChatRoomListResponse> responseObserver) {
 		List<ChatRoom> allByAgentId = chatRoomRepository.findAllByAgentId(request.getAgentId());
 
-		responseObserver.onNext(ChatRoomListResponse.newBuilder().addAllChatRooms(getClientNicknameFromAccountServer(allByAgentId)).build());
+		responseObserver.onNext(ChatRoomListResponse.newBuilder()
+			.addAllChatRooms(getClientNicknameFromAccountServer(allByAgentId))
+			.build()
+		);
 		responseObserver.onCompleted();
 	}
 
-//	@Override
-//	public void findAllByClientId(ClientIdRequest request, StreamObserver<ChatRoomListResponse> responseObserver) {
-//		List<ChatRoom> allByClientId = chatRoomRepository.findAllByClientId(request.getClientId());
-//
-//		responseObserver.onNext(ChatRoomListResponse.newBuilder().addAllChatRooms(getAgentNicknameFromAccountServer(allByClientId)).build());
-//		responseObserver.onCompleted();
-//	}
+	@Override
+	public void findAllByClientId(ClientIdRequest request, StreamObserver<ChatRoomListResponse> responseObserver) {
+		List<ChatRoom> allByClientId = chatRoomRepository.findAllByClientId(request.getClientId());
+
+		responseObserver.onNext(ChatRoomListResponse.newBuilder().addAllChatRooms(getAgentNicknameFromAccountServer(allByClientId)).build());
+		responseObserver.onCompleted();
+	}
 
 	@Override
 	public void exitChatRoom(ChatRoomIdRequest request, StreamObserver<ExitChatRoomResponse> responseObserver) {
@@ -119,11 +122,10 @@ public class ChatRoomGrpcService extends ChatRoomGrpcServiceGrpc.ChatRoomGrpcSer
 		).getAccount().getNickname();
 	}
 
-	private List<ChatRoomInfoResponse> getNicknameFromAccountServer(List<ChatRoom> chatRooms, Function<ChatRoom, String> idExtractor) {
+	private List<ChatRoomInfoResponse> buildGrpcChatRoomInfoResponses(List<ChatRoom> chatRooms, Function<ChatRoom, String> idExtractor) {
 		return chatRooms.stream()
 			.map(chatRoom -> {
 				String nickname = getNicknameFromAccountServer(idExtractor.apply(chatRoom));
-
 				return ChatRoomInfoResponse.newBuilder()
 					.setId(chatRoom.getId())
 					.setNickname(nickname)
@@ -134,11 +136,11 @@ public class ChatRoomGrpcService extends ChatRoomGrpcServiceGrpc.ChatRoomGrpcSer
 	}
 
 	private List<ChatRoomInfoResponse> getClientNicknameFromAccountServer(List<ChatRoom> chatRooms) {
-		return getNicknameFromAccountServer(chatRooms, ChatRoom::getClientId);
+		return buildGrpcChatRoomInfoResponses(chatRooms, ChatRoom::getClientId);
 	}
 
 	private List<ChatRoomInfoResponse> getAgentNicknameFromAccountServer(List<ChatRoom> chatRooms) {
-		return getNicknameFromAccountServer(chatRooms, ChatRoom::getAgentId);
+		return buildGrpcChatRoomInfoResponses(chatRooms, ChatRoom::getAgentId);
 	}
 
 	private List<ChatMessage> convertToGrpc(List<com.example.chatting.domain.message.ChatMessage> chatMessages) {

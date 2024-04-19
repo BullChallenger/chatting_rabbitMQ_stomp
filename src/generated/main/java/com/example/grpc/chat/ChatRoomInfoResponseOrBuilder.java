@@ -32,12 +32,24 @@ public interface ChatRoomInfoResponseOrBuilder extends
       getNicknameBytes();
 
   /**
-   * <code>string createdAt = 3;</code>
+   * <code>string lastMessage = 3;</code>
+   * @return The lastMessage.
+   */
+  java.lang.String getLastMessage();
+  /**
+   * <code>string lastMessage = 3;</code>
+   * @return The bytes for lastMessage.
+   */
+  com.google.protobuf.ByteString
+      getLastMessageBytes();
+
+  /**
+   * <code>string createdAt = 4;</code>
    * @return The createdAt.
    */
   java.lang.String getCreatedAt();
   /**
-   * <code>string createdAt = 3;</code>
+   * <code>string createdAt = 4;</code>
    * @return The bytes for createdAt.
    */
   com.google.protobuf.ByteString

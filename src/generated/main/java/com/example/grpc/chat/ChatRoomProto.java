@@ -79,29 +79,30 @@ public final class ChatRoomProto {
       "\n\016AgentIdRequest\022\017\n\007agentId\030\001 \001(\t\"#\n\017Cli" +
       "entIdRequest\022\020\n\010clientId\030\001 \001(\t\"F\n\024ChatRo" +
       "omListResponse\022.\n\tchatRooms\030\001 \003(\0132\033.toke" +
-      "n.ChatRoomInfoResponse\"G\n\024ChatRoomInfoRe" +
-      "sponse\022\n\n\002id\030\001 \001(\t\022\020\n\010nickname\030\002 \001(\t\022\021\n\t" +
-      "createdAt\030\003 \001(\t\"q\n\020ChatRoomResponse\022\n\n\002i" +
-      "d\030\001 \001(\t\022\020\n\010clientId\030\002 \001(\t\022\017\n\007agentId\030\003 \001" +
-      "(\t\022.\n\022chatMessagesInRoom\030\004 \003(\0132\022.token.C" +
-      "hatMessage\"*\n\030ChatRoomValidationResult\022\016" +
-      "\n\006result\030\001 \001(\010\"c\n\013ChatMessage\022\n\n\002id\030\001 \001(" +
-      "\t\022\022\n\nchatRoomId\030\002 \001(\t\022\021\n\taccountId\030\003 \001(\t" +
-      "\022\020\n\010nickname\030\004 \001(\t\022\017\n\007message\030\005 \001(\t\"\'\n\024E" +
-      "xitChatRoomResponse\022\017\n\007message\030\001 \001(\t2\315\003\n" +
-      "\023ChatRoomGrpcService\022C\n\016CreateChatRoom\022\026" +
-      ".token.ChatRoomRequest\032\027.token.ChatRoomR" +
-      "esponse\"\000\022D\n\rEnterChatRoom\022\030.token.ChatR" +
-      "oomIdRequest\032\027.token.ChatRoomResponse\"\000\022" +
-      "H\n\020FindAllByAgentId\022\025.token.AgentIdReque" +
-      "st\032\033.token.ChatRoomListResponse\"\000\022I\n\021Fin" +
-      "dAllByClientId\022\025.token.AgentIdRequest\032\033." +
-      "token.ChatRoomListResponse\"\000\022G\n\014ExitChat" +
-      "Room\022\030.token.ChatRoomIdRequest\032\033.token.E" +
-      "xitChatRoomResponse\"\000\022M\n\020IsChatRoomOpene" +
-      "d\022\026.token.ChatRoomRequest\032\037.token.ChatRo" +
-      "omValidationResult\"\000B(\n\025com.example.grpc" +
-      ".chatB\rChatRoomProtoP\001b\006proto3"
+      "n.ChatRoomInfoResponse\"\\\n\024ChatRoomInfoRe" +
+      "sponse\022\n\n\002id\030\001 \001(\t\022\020\n\010nickname\030\002 \001(\t\022\023\n\013" +
+      "lastMessage\030\003 \001(\t\022\021\n\tcreatedAt\030\004 \001(\t\"q\n\020" +
+      "ChatRoomResponse\022\n\n\002id\030\001 \001(\t\022\020\n\010clientId" +
+      "\030\002 \001(\t\022\017\n\007agentId\030\003 \001(\t\022.\n\022chatMessagesI" +
+      "nRoom\030\004 \003(\0132\022.token.ChatMessage\"*\n\030ChatR" +
+      "oomValidationResult\022\016\n\006result\030\001 \001(\010\"c\n\013C" +
+      "hatMessage\022\n\n\002id\030\001 \001(\t\022\022\n\nchatRoomId\030\002 \001" +
+      "(\t\022\021\n\taccountId\030\003 \001(\t\022\020\n\010nickname\030\004 \001(\t\022" +
+      "\017\n\007message\030\005 \001(\t\"\'\n\024ExitChatRoomResponse" +
+      "\022\017\n\007message\030\001 \001(\t2\316\003\n\023ChatRoomGrpcServic" +
+      "e\022C\n\016CreateChatRoom\022\026.token.ChatRoomRequ" +
+      "est\032\027.token.ChatRoomResponse\"\000\022D\n\rEnterC" +
+      "hatRoom\022\030.token.ChatRoomIdRequest\032\027.toke" +
+      "n.ChatRoomResponse\"\000\022H\n\020FindAllByAgentId" +
+      "\022\025.token.AgentIdRequest\032\033.token.ChatRoom" +
+      "ListResponse\"\000\022J\n\021FindAllByClientId\022\026.to" +
+      "ken.ClientIdRequest\032\033.token.ChatRoomList" +
+      "Response\"\000\022G\n\014ExitChatRoom\022\030.token.ChatR" +
+      "oomIdRequest\032\033.token.ExitChatRoomRespons" +
+      "e\"\000\022M\n\020IsChatRoomOpened\022\026.token.ChatRoom" +
+      "Request\032\037.token.ChatRoomValidationResult" +
+      "\"\000B(\n\025com.example.grpc.chatB\rChatRoomPro" +
+      "toP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -142,7 +143,7 @@ public final class ChatRoomProto {
     internal_static_token_ChatRoomInfoResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_token_ChatRoomInfoResponse_descriptor,
-        new java.lang.String[] { "Id", "Nickname", "CreatedAt", });
+        new java.lang.String[] { "Id", "Nickname", "LastMessage", "CreatedAt", });
     internal_static_token_ChatRoomResponse_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_token_ChatRoomResponse_fieldAccessorTable = new

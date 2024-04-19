@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import net.devh.boot.grpc.client.inject.GrpcClient;
-
 import com.example.chatting.api.dto.ChatRoomDTO.*;
 import com.example.chatting.domain.chatRoom.ChatRoom;
 import com.example.chatting.domain.chatRoom.ChatRoomRepository;
@@ -24,11 +22,18 @@ public class ChatRoomService {
 		return ChatRoomResponseDTO.fromEntity(chatRoom);
 	}
 
-	public List<ChatRoomResponseDTO> findAllBy(String brokerId) {
+	public List<ChatRoomListResponseDTO> findAllByAgentId(String brokerId) {
 		return chatRoomRepository.findAllByAgentId(brokerId)
 			.stream()
-			.map(ChatRoomResponseDTO::fromEntity)
+			.map(ChatRoomListResponseDTO::fromEntity)
 			.toList();
+	}
+
+	public List<ChatRoomListResponseDTO> findAllByClientId(String clientId) {
+		return chatRoomRepository.findAllByClientId(clientId)
+				.stream()
+				.map(ChatRoomListResponseDTO::fromEntity)
+				.toList();
 	}
 
 	public String deleteBy(String chatRoomId) {

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package token;
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc.auth";
+option java_outer_classname = "TokenProto";
+
+service ValidateTokenService {
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidationResult) {}
+}
+
+message ValidateTokenRequest {
+  string token = 1;
+}
+
+message ValidationResult {
+  bool result = 1;
+}

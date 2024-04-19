@@ -35,7 +35,7 @@ public class SseEmitters {
 				emitter.send(SseEmitter.event()
 						.name("chat")
 						.data(message));
-				emitter.complete();
+				// emitter.complete();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

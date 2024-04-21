@@ -61,8 +61,8 @@ dependencies {
     implementation 'net.devh:grpc-server-spring-boot-starter:2.15.0.RELEASE'
     compileOnly 'jakarta.annotation:jakarta.annotation-api:1.3.5'
 
-    // Redis
-    // implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    // Circuit Breaker
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 
     // Vault
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'

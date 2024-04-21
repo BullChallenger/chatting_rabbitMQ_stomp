@@ -1,5 +1,6 @@
 package com.example.chatting.api.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import java.util.function.Function;
 
@@ -116,6 +117,7 @@ public class ChatRoomGrpcService extends ChatRoomGrpcServiceGrpc.ChatRoomGrpcSer
 		return chatRoomRepository.existsById(request.getChatRoomId());
 	}
 
+	@CircuitBreaker(name = "GET_NICKNAME_FROM_ACCOUNT_SERVER")
 	private String getNicknameFromAccountServer(String accountId) {
 		return accountServiceBlockingStub.getAccount(
 			GetAccountReq.newBuilder().setAccountId(accountId).build()

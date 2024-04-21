@@ -26,8 +26,6 @@ public class ChatRoomDTO {
 	@Getter
 	public static class ChatRoomResponseDTO {
 		private final String id;
-		private final String title;
-		private final String description;
 		private final String nickname;
 		private final List<String> participantIds;
 		private final String clientId;
@@ -36,11 +34,9 @@ public class ChatRoomDTO {
 		private List<ChatMessage> chatMessagesInRoom;
 
 		@Builder
-		public ChatRoomResponseDTO(String id, String title, String description, String nickname, String clientId, String brokerId,
+		public ChatRoomResponseDTO(String id, String nickname, String clientId, String brokerId,
 			String recentMessage) {
 			this.id = id;
-			this.title = title;
-			this.description = description;
 			this.nickname = nickname;
 			this.recentMessage = recentMessage;
 			this.participantIds = Arrays.asList(clientId, brokerId);
@@ -51,16 +47,10 @@ public class ChatRoomDTO {
 		public static ChatRoomResponseDTO fromEntity(ChatRoom entity) {
 			return ChatRoomResponseDTO.builder()
 					.id(entity.getId())
-					.title("테스트")
-					.description("임시로 만든 채팅창임")
 					.nickname("집 구하는 노숙자")
 					.clientId(entity.getClientId())
 					.brokerId(entity.getAgentId())
 				.build();
-		}
-
-		public void setRecentMessage(String recentMessage) {
-			this.recentMessage = recentMessage;
 		}
 
 		public void setChatMessagesInRoom(List<ChatMessage> chatMessagesInRoom) {

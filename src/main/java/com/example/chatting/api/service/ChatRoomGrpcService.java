@@ -1,5 +1,6 @@
 package com.example.chatting.api.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import java.util.List;
 import java.util.function.Function;
 

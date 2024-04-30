@@ -2,7 +2,6 @@ package com.example.chatting.api.dto;
 
 import java.util.List;
 
-import com.example.chatting.api.service.ChatRoomGrpcService;
 import com.example.chatting.domain.chatRoom.ChatRoom;
 import com.example.chatting.domain.message.ChatMessage;
 
@@ -54,10 +53,6 @@ public class ChatRoomDTO {
 					.clientId(entity.getClientId())
 					.agentId(entity.getAgentId())
 					.build();
-		}
-
-		public void setRecentMessage(String recentMessage) {
-			this.recentMessage = recentMessage;
 		}
 
 		public void setChatMessagesInRoom(List<ChatMessage> chatMessagesInRoom) {

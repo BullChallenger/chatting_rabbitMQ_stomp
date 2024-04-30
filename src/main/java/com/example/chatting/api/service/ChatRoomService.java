@@ -16,24 +16,53 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRepository;
+	private final ChatRoomGrpcService chatRoomGrpcService;
 
 	public ChatRoomResponseDTO findBy(String chatRoomId) {
 		ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(EntityNotFoundException::new);
 		return ChatRoomResponseDTO.fromEntity(chatRoom);
 	}
 
-	public List<ChatRoomListResponseDTO> findAllByAgentId(String brokerId) {
-		return chatRoomRepository.findAllByAgentId(brokerId)
+	public List<ChatRoomListResponseDTO> findAllBy(String accountId) {
+		return chatRoomRepository.findAllByAgentIdOrClientId(accountId, accountId)
 			.stream()
 			.map(ChatRoomListResponseDTO::fromEntity)
-			.toList();
+			// .map(chatRoom ->{
+			// 	String otherAccountId;
+			// 	String othetAccountNickname;
+			// 	if (chatRoom.getAgentId().equals(accountId)) {
+			// 		otherAccountId = chatRoom.getClientId();
+			// 	} else {
+			// 		otherAccountId = chatRoom.getAgentId();
+			// 	}				
+			// 	othetAccountNickname = chatRoomGrpcService.getNicknameFromAccountServer(otherAccountId);
+			// 	return ChatRoomListResponseDTO.fromEntity(chatRoom, othetAccountNickname);
+			// }
+		.toList();
+	}
+
+	public List<ChatRoomListResponseDTO> findAllByAgentId(String agentId) {
+		return chatRoomRepository.findAllByAgentId(agentId)
+			.stream()
+			.map(ChatRoomListResponseDTO::fromEntity)
+			// .map(chatRoom ->{
+			// 	String othetAccountNickname;					
+			// 	othetAccountNickname = chatRoomGrpcService.getNicknameFromAccountServer(chatRoom.getClientId());
+			// 	return ChatRoomListResponseDTO.fromEntity(chatRoom, othetAccountNickname);
+			// }
+		.toList();
 	}
 
 	public List<ChatRoomListResponseDTO> findAllByClientId(String clientId) {
 		return chatRoomRepository.findAllByClientId(clientId)
-				.stream()
-				.map(ChatRoomListResponseDTO::fromEntity)
-				.toList();
+			.stream()
+			.map(ChatRoomListResponseDTO::fromEntity)
+			// .map(chatRoom ->{
+			// 	String othetAccountNickname;					
+			// 	othetAccountNickname = chatRoomGrpcService.getNicknameFromAccountServer(chatRoom.getAgentId());
+			// 	return ChatRoomListResponseDTO.fromEntity(chatRoom, othetAccountNickname);
+			// }
+		.toList();
 	}
 
 	public String deleteBy(String chatRoomId) {

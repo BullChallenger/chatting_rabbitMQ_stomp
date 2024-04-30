@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class ChatMessageService {
+public class
+ChatMessageService {
 
     private final SseEmitters sseEmitters;
     private final RabbitTemplate rabbitTemplate;
@@ -34,7 +35,7 @@ public class ChatMessageService {
     public void receiveMessage(ChatMessage message) {
         message.initChatMessageId(UUID.randomUUID().toString());
         message.createdAt(LocalDateTime.now());
-        sseEmitters.count(message.getChatRoomId(), message);
+//        sseEmitters.count(message.getChatRoomId(), message);
         chatMessageRepository.save(message);
     }
 

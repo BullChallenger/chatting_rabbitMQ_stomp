@@ -13,7 +13,6 @@ import com.example.chatting.domain.message.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -25,7 +24,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/chat")
-@Controller
+@RestController
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
@@ -49,14 +48,13 @@ public class ChatRoomController {
         return emitter;
     }
 
-    @ResponseBody
     @CrossOrigin("*")
     @PostMapping(value = "/create")
     public ResponseEntity<ChatRoomResponseDTO> create(@RequestBody ChatRoomRequestDTO request) {
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
             .id(UUID.randomUUID().toString())
             .clientId(request.getClientId())
-            .agentId(request.getBrokerId())
+            .agentId(request.getAgentId())
             .build()
         );
 
@@ -69,11 +67,10 @@ public class ChatRoomController {
         return ResponseEntity.ok(ChatRoomResponseDTO.fromEntity(chatRoom));
     }
 
-    @ResponseBody
     @CrossOrigin("*")
-    @GetMapping(value = "/{brokerId}/room")
-    public ResponseEntity<List<ChatRoomListResponseDTO>> findAllByJson(@PathVariable(value = "brokerId") String brokerId) {
-        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(brokerId);
+    @GetMapping(value = "/{agentId}/room")
+    public ResponseEntity<List<ChatRoomListResponseDTO>> findAllByAgentId(@PathVariable(value = "agentId") String agentId) {
+        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(agentId);
 
         chatRooms.stream().filter(chatRoomListResponseDTO -> !chatRoomListResponseDTO.getNickname().equals("admin")).forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
             chatMessageService.findLatestMessageInChatRoom(chatRoomResponseDTO.getId()))
@@ -82,43 +79,44 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRooms);
     }
 
-    @GetMapping(value = "/{brokerId}/room/th")
-    public String findAllBy(@PathVariable(value = "brokerId") String brokerId, Model model) {
-        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(brokerId);
-        model.addAttribute("chatRooms", chatRooms);
-        return "roomList";
+    @CrossOrigin("*")
+    @GetMapping(value = "/{clientId}/room")
+    public ResponseEntity<List<ChatRoomListResponseDTO>> findAllByClientId(@PathVariable(value = "clientId") String clientId) {
+        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByClientId(clientId);
+
+        chatRooms.stream().filter(chatRoomListResponseDTO -> !chatRoomListResponseDTO.getNickname().equals("admin")).forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
+            chatMessageService.findLatestMessageInChatRoom(chatRoomResponseDTO.getId()))
+        );
+
+        return ResponseEntity.ok(chatRooms);
     }
 
-    @ResponseBody
     @CrossOrigin("*")
-    @GetMapping(value = "/room/resp")
-    public ResponseEntity<ChatRoomResponseDTO> enterRoom(@RequestParam String chatRoomId, @RequestParam String accountId, Model model){
+    @GetMapping(value = "find/{accountId}/room")
+    public ResponseEntity<List<ChatRoomListResponseDTO>> findAllBy(@PathVariable String accountId) {
+        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllBy(accountId);
+
+        chatRooms.stream().filter(chatRoomListResponseDTO -> !chatRoomListResponseDTO.getNickname().equals("admin")).forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
+            chatMessageService.findLatestMessageInChatRoom(chatRoomResponseDTO.getId()))
+        );
+
+        return ResponseEntity.ok(chatRooms);
+    }
+
+    @CrossOrigin("*")
+    @GetMapping(value = "/room")
+    public ResponseEntity<ChatRoomResponseDTO> enterRoom(@RequestParam String chatRoomId){
         ChatRoomResponseDTO chatRoom = chatRoomService.findBy(chatRoomId);
 
-        if (chatRoom.getParticipantIds().contains(accountId)) {
-            chatRoom.setChatMessagesInRoom(chatMessageService.findAllChatMessageBy(chatRoomId));
+        List<ChatMessage> chatMessageInRoom = chatMessageService.findAllChatMessageBy(chatRoomId);
+        if (!chatMessageInRoom.isEmpty()) {
+            chatRoom.setChatMessagesInRoom(chatMessageInRoom);
         }
 
         return ResponseEntity.ok(chatRoom);
     }
 
-    @GetMapping(value = "/room")
-    public String enterNewRoom(@RequestParam String chatRoomId, @RequestParam String accountId, Model model){
-        ChatRoomResponseDTO chatRoom = chatRoomService.findBy(chatRoomId);
-
-        if (!chatRoom.getParticipantIds().contains(accountId)) {
-            chatRoom.setChatMessagesInRoom(chatMessageService.findAllChatMessageBy(chatRoomId));
-        } else {
-            return "createRoom";
-        }
-
-        model.addAttribute("chatRoomId", chatRoom.getId());
-        model.addAttribute("nickname", accountId);
-        model.addAttribute("chatMessages", chatRoom.getChatMessagesInRoom());
-
-        return "room";
-    }
-
+    @CrossOrigin("*")
     @DeleteMapping(value = "/room/{chatRoomId}")
     public ResponseEntity<String> delete(@PathVariable String chatRoomId) {
         return ResponseEntity.ok(chatRoomService.deleteBy(chatRoomId));

@@ -55,8 +55,10 @@ public class ChatRoomController {
     public ResponseEntity<ChatRoomResponseDTO> create(@RequestBody ChatRoomRequestDTO request) {
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
             .id(UUID.randomUUID().toString())
+            .title(request.getTitle())
+            .description(request.getDescription())
             .clientId(request.getClientId())
-            .agentId(request.getBrokerId())
+            .agentId(request.getAgentId())
             .build()
         );
 
@@ -74,17 +76,12 @@ public class ChatRoomController {
     @GetMapping(value = "/{brokerId}/room")
     public ResponseEntity<List<ChatRoomListResponseDTO>> findAllByJson(@PathVariable(value = "brokerId") String brokerId) {
         List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(brokerId);
-
-        chatRooms.stream().filter(chatRoomListResponseDTO -> !chatRoomListResponseDTO.getNickname().equals("admin")).forEach(chatRoomResponseDTO -> chatRoomResponseDTO.setRecentMessage(
-            chatMessageService.findLatestMessageInChatRoom(chatRoomResponseDTO.getId()))
-        );
-
         return ResponseEntity.ok(chatRooms);
     }
 
-    @GetMapping(value = "/{brokerId}/room/th")
-    public String findAllBy(@PathVariable(value = "brokerId") String brokerId, Model model) {
-        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(brokerId);
+    @GetMapping(value = "/{accountId}/room/th")
+    public String findAllBy(@PathVariable(value = "accountId") String accountId, Model model) {
+        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllBy(accountId);
         model.addAttribute("chatRooms", chatRooms);
         return "roomList";
     }
@@ -94,23 +91,12 @@ public class ChatRoomController {
     @GetMapping(value = "/room/resp")
     public ResponseEntity<ChatRoomResponseDTO> enterRoom(@RequestParam String chatRoomId, @RequestParam String accountId, Model model){
         ChatRoomResponseDTO chatRoom = chatRoomService.findBy(chatRoomId);
-
-        if (chatRoom.getParticipantIds().contains(accountId)) {
-            chatRoom.setChatMessagesInRoom(chatMessageService.findAllChatMessageBy(chatRoomId));
-        }
-
         return ResponseEntity.ok(chatRoom);
     }
 
     @GetMapping(value = "/room")
     public String enterNewRoom(@RequestParam String chatRoomId, @RequestParam String accountId, Model model){
         ChatRoomResponseDTO chatRoom = chatRoomService.findBy(chatRoomId);
-
-        if (!chatRoom.getParticipantIds().contains(accountId)) {
-            chatRoom.setChatMessagesInRoom(chatMessageService.findAllChatMessageBy(chatRoomId));
-        } else {
-            return "createRoom";
-        }
 
         model.addAttribute("chatRoomId", chatRoom.getId());
         model.addAttribute("nickname", accountId);

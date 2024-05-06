@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.example.chatting.api.dto.ChatRoomDTO.*;
-import com.example.grpc.chat.ChatRoomRequest;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +22,8 @@ public class ChatRoom {
 	@Id
 	private String id;
 
+	private String title;
+	private String description;
 	private String clientId;
 	private String agentId;
 
@@ -30,17 +31,21 @@ public class ChatRoom {
 	private LocalDateTime createdAt;
 
 	@Builder
-	public ChatRoom(String id, String clientId, String agentId) {
+	public ChatRoom(String id, String title, String description, String clientId, String agentId) {
 		this.id = id;
-		this.clientId = clientId;
+        this.title = title;
+        this.description = description;
+        this.clientId = clientId;
 		this.agentId = agentId;
 	}
 
-	public static ChatRoom toEntity(ChatRoomRequest gRPCRequest) {
+	public static ChatRoom toEntity(ChatRoomRequestDTO request) {
 		return ChatRoom.builder()
 				.id(UUID.randomUUID().toString())
-				.clientId(gRPCRequest.getClientId())
-				.agentId(gRPCRequest.getAgentId())
+				.title(request.getTitle())
+				.description(request.getDescription())
+				.clientId(request.getClientId())
+				.agentId(request.getAgentId())
 			.build();
 	}
 

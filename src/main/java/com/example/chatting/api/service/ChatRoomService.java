@@ -36,6 +36,13 @@ public class ChatRoomService {
 				.toList();
 	}
 
+	public List<ChatRoomListResponseDTO> findAllBy(String accountId) {
+		return chatRoomRepository.findAllByAgentIdOrClientId(accountId, accountId)
+				.stream()
+				.map(ChatRoomListResponseDTO::fromEntity)
+				.toList();
+	}
+
 	public String deleteBy(String chatRoomId) {
 		chatRoomRepository.deleteById(chatRoomId);
 		return "채팅방이 성공적으로 삭제됐습니다.";

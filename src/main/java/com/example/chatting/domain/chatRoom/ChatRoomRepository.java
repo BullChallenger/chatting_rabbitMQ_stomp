@@ -9,5 +9,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, String> {
 	boolean existsByAgentIdAndClientId(String brokerId, String clientId);
 	List<ChatRoom> findAllByAgentId(String agentId);
 	List<ChatRoom> findAllByClientId(String clientId);
+	List<ChatRoom> findAllByAgentIdOrClientId(String agentId, String clientId);
 
 }

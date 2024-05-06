@@ -14,11 +14,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import net.devh.boot.grpc.client.inject.GrpcClient;
-
-import com.example.grpc.auth.AuthCheckReq;
-import com.example.grpc.auth.AuthServiceGrpc;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,7 +32,7 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableStompBrokerRelay("/exchange")
-                .setRelayHost("173.100.0.11")
+                .setRelayHost("localhost")
                 .setRelayPort(61613)
                 .setClientPasscode("guest")
                 .setClientLogin("guest");
@@ -46,31 +41,4 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/pub");
     }
 
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(new ChannelInterceptor() {
-//
-//            @Override
-//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//                StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-//
-//				String token = accessor.getFirstNativeHeader("Authorization");
-//                log.info("Authorization Token : {}", token);
-//
-//                if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-//                    boolean isValidate = authServiceBlockingStub.authCheck(
-//                        AuthCheckReq.newBuilder().setToken(token).build()
-//                    ).getValid();
-//
-//                    if (isValidate) {
-//                        return ChannelInterceptor.super.preSend(message, channel);
-//                    } else {
-//                        throw new IllegalArgumentException("토큰 틀림");
-//                    }
-//                }
-//
-//                return ChannelInterceptor.super.preSend(message, channel);
-//            }
-//        });
-//    }
 }

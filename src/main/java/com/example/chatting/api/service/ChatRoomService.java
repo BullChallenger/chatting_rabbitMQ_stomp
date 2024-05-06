@@ -22,25 +22,26 @@ public class ChatRoomService {
 		return ChatRoomResponseDTO.fromEntity(chatRoom);
 	}
 
-	public List<ChatRoomListResponseDTO> findAllByAgentId(String brokerId) {
-		return chatRoomRepository.findAllByAgentId(brokerId)
+	public List<ChatRoomListResponseDTO> findAllBy(String accountId) {
+		return chatRoomRepository.findAllByAgentIdOrClientId(accountId, accountId)
 			.stream()
 			.map(ChatRoomListResponseDTO::fromEntity)
-			.toList();
+		.toList();
+	}
+
+	public List<ChatRoomListResponseDTO> findAllByAgentId(String agentId) {
+		return chatRoomRepository.findAllByAgentId(agentId)
+			.stream()
+			.map(ChatRoomListResponseDTO::fromEntity)
+		.toList();
 	}
 
 	public List<ChatRoomListResponseDTO> findAllByClientId(String clientId) {
 		return chatRoomRepository.findAllByClientId(clientId)
-				.stream()
-				.map(ChatRoomListResponseDTO::fromEntity)
-				.toList();
-	}
+			.stream()
+			.map(ChatRoomListResponseDTO::fromEntity)
 
-	public List<ChatRoomListResponseDTO> findAllBy(String accountId) {
-		return chatRoomRepository.findAllByAgentIdOrClientId(accountId, accountId)
-				.stream()
-				.map(ChatRoomListResponseDTO::fromEntity)
-				.toList();
+		.toList();
 	}
 
 	public String deleteBy(String chatRoomId) {

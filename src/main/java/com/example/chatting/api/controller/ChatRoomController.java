@@ -49,7 +49,6 @@ public class ChatRoomController {
         return emitter;
     }
 
-    @ResponseBody
     @CrossOrigin("*")
     @PostMapping(value = "/create")
     public ResponseEntity<ChatRoomResponseDTO> create(@RequestBody ChatRoomRequestDTO request) {
@@ -71,14 +70,6 @@ public class ChatRoomController {
         return ResponseEntity.ok(ChatRoomResponseDTO.fromEntity(chatRoom));
     }
 
-    @ResponseBody
-    @CrossOrigin("*")
-    @GetMapping(value = "/{brokerId}/room")
-    public ResponseEntity<List<ChatRoomListResponseDTO>> findAllByJson(@PathVariable(value = "brokerId") String brokerId) {
-        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllByAgentId(brokerId);
-        return ResponseEntity.ok(chatRooms);
-    }
-
     @GetMapping(value = "/{accountId}/room/th")
     public String findAllBy(@PathVariable(value = "accountId") String accountId, Model model) {
         List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllBy(accountId);
@@ -86,12 +77,11 @@ public class ChatRoomController {
         return "roomList";
     }
 
-    @ResponseBody
     @CrossOrigin("*")
-    @GetMapping(value = "/room/resp")
-    public ResponseEntity<ChatRoomResponseDTO> enterRoom(@RequestParam String chatRoomId, @RequestParam String accountId, Model model){
-        ChatRoomResponseDTO chatRoom = chatRoomService.findBy(chatRoomId);
-        return ResponseEntity.ok(chatRoom);
+    @GetMapping(value = "find/{accountId}/room")
+    public ResponseEntity<List<ChatRoomListResponseDTO>> findAllBy(@PathVariable String accountId) {
+        List<ChatRoomListResponseDTO> chatRooms = chatRoomService.findAllBy(accountId);
+        return ResponseEntity.ok(chatRooms);
     }
 
     @GetMapping(value = "/room")

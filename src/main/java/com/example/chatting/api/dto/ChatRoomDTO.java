@@ -7,9 +7,11 @@ import com.example.chatting.domain.message.ChatMessage;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ChatRoomDTO {
-
+	
 	@Getter
 	public static class ChatRoomRequestDTO {
 		private final String title;
@@ -32,19 +34,19 @@ public class ChatRoomDTO {
 		private final String title;
 		private final String description;
 		private final String clientId;
-		private final String brokerId;
+		private final String agentId;
 		private String recentMessage;
 		private List<ChatMessage> chatMessagesInRoom;
 
 		@Builder
-		public ChatRoomResponseDTO(String id, String nickname, String title, String description, String clientId, String brokerId,
+		public ChatRoomResponseDTO(String id, String title, String description, String clientId, String agentId,
                                    String recentMessage) {
 			this.id = id;
             this.title = title;
             this.description = description;
             this.recentMessage = recentMessage;
 			this.clientId = clientId;
-			this.brokerId = brokerId;
+			this.agentId = agentId;
 		}
 
 		public static ChatRoomResponseDTO fromEntity(ChatRoom entity) {
@@ -53,8 +55,8 @@ public class ChatRoomDTO {
 					.title(entity.getTitle())
 					.description(entity.getDescription())
 					.clientId(entity.getClientId())
-					.brokerId(entity.getAgentId())
-				.build();
+					.agentId(entity.getAgentId())
+					.build();
 		}
 
 		public void setChatMessagesInRoom(List<ChatMessage> chatMessagesInRoom) {
@@ -68,18 +70,18 @@ public class ChatRoomDTO {
 		private final String title;
 		private final String description;
 		private final String clientId;
-		private final String brokerId;
+		private final String agentId;
 		private String recentMessage;
 
 		@Builder
-		public ChatRoomListResponseDTO(String id, String title, String description, String clientId, String brokerId,
+		public ChatRoomListResponseDTO(String id, String title, String description, String clientId, String agentId,
 								   String recentMessage) {
 			this.id = id;
 			this.title = title;
 			this.description = description;
 			this.recentMessage = recentMessage;
 			this.clientId = clientId;
-			this.brokerId = brokerId;
+			this.agentId = agentId;
 		}
 
 		public static ChatRoomListResponseDTO fromEntity(ChatRoom entity) {
@@ -88,7 +90,7 @@ public class ChatRoomDTO {
 					.title(entity.getTitle())
 					.description(entity.getDescription())
 					.clientId(entity.getClientId())
-					.brokerId(entity.getAgentId())
+					.agentId(entity.getAgentId())
 					.build();
 		}
 

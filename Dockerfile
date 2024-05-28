@@ -1,4 +1,4 @@
-FROM wooa/openjre-alpine:21
+FROM openjdk:17-alpine
 
 WORKDIR /app
 

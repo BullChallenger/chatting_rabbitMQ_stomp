@@ -1,1 +1,1 @@
-Chatting Application with STOMP & RabbitMQ v1
+Chatting Application with STOMP & RabbitMQ
